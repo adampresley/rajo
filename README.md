@@ -7,9 +7,10 @@ RAJO
 To build a minified version and documentation you must have NodeJS + NPM + Grunt installed. Once
 installed you can follow these commands to build.
 
-    ```bash
-    $ npm install
-    $ grunt
+```bash
+$ npm install
+$ grunt
+```
 
 This will generate a combined, minified JavaScript file in **dist/rajo.js** as well
 as the library documentation in **dist/docs/html**.
