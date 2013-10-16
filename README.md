@@ -3,6 +3,18 @@ RAJO
 
 *Random Assortment of JavaScript Objects*
 
+This library is an assortment of JavaScript objects I have built and used
+over time that needed a home. They make use of RequireJS AMD loader
+and offer the following features.
+
+* Utilities - Map/reduce functions, for each loops
+* Publish/Subscribe - An object for event driven programming using the publish/subscribe model
+* Services - Build JavaScript service objects that interface with RESTful-style back-ends
+* Single Page App - An object for making single-page style apps
+* Mozilla Persona - A simple Mozilla Persona wrapper that published events for login and log out
+* Bootstrap Modal - A wrapper for dynamically creating and displaying a Bootstrap 3 modal dialog without having to create markup
+
+
 ## Building
 To build a minified version and documentation you must have NodeJS + NPM + Grunt installed. Once
 installed you can follow these commands to build.
