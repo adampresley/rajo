@@ -158,9 +158,9 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 
 				/* Animation */
 				animationIn: "show",
-				animationInSpeed: "normal",
+				animationInSpeed: 0,
 				animationOut: "hide",
-				animationOutSpeed: "0",
+				animationOutSpeed: 0,
 
 				/* Events */
 				beforeLoad: function(data) {
