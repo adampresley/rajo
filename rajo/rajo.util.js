@@ -100,9 +100,9 @@ define([], function() {
 		map: function(items, fn) {
 			var result = [];
 
-			$util.each(function(item) {
+			$util.each(items, function(item) {
 				result.push(fn(item));
-			}, items);
+			});
 
 			return result;
 		},
