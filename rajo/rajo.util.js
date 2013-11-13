@@ -202,7 +202,7 @@ define([], function() {
 		reduce: function(start, items, fn) {
 			var base = start;
 
-			$util.eachKvp(items, function(item) { base = fn(base, item); });
+			$util.each(items, function(item) { base = fn(base, item); });
 			return base;
 		}
 	};
