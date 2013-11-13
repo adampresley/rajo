@@ -131,10 +131,42 @@ define([], function() {
 				result = {},
 				kvp = [];
 
-			$util.each(function(item) {
+			$util.each(items, function(item) {
 				kvp = kvpFn(item);
 				result[kvp.key] = kvp.value;
-			}, items);
+			});
+
+			return result;
+		},
+
+		/**
+		 * Function: max
+		 * Takes a starting item, an array of items or object of keys, and a comparator function
+		 * and returns the *max* item. The comparator function takes the current
+		 * "max" item and the next item in the items array and should return the
+		 * "bigger" of the two.
+		 *
+		 * Parameters:
+		 *    startItem - Starting item for comparison
+		 *    items - Array/object of items to find the max of
+		 *    fn - Comparator function
+		 *
+		 * Returns:
+		 *    "Biggest" item in the items array
+		 */
+		max: function(startItem, items, fn) {
+			var
+				result = startItem;
+
+			if (items.hasOwnProperty("length")) {
+				$util.each(items, function(item) {
+					result = fn(result, item);
+				});
+			} else if (typeof items === "object") {
+				$util.eachKvp(items, function(item) {
+					result = fn(result, item);
+				});
+			}
 
 			return result;
 		},
