@@ -1,47 +1,16 @@
-/**
- * Class: rajo.util
- * This class provides handy utility methods for looping, number
- * ranges, and more.
- *
- * This class is a part of the RAJO, or Random Assortment of JavaScript Objects
- * library.
- *
- * Author:
- *    Adam Presley
- *
- * License (BSD 2-Clause):
- *    > Copyright 2013 Adam Presley. All rights reserved.
- *    >
- *    > Redistribution and use in source and binary forms, with or without
- *    > modification, are permitted provided that the following conditions are met:
- *    >
- *    > 1. Redistributions of source code must retain the above copyright notice, this
- *    >    list of conditions and the following disclaimer.
- *    >
- *    > 2. Redistributions in binary form must reproduce the above copyright notice,
- *    >    this list of conditions and the following disclaimer in the documentation
- *    >    and/or other materials provided with the distribution.
- *    >
- *    > THIS SOFTWARE IS PROVIDED BY Adam Presley "AS IS" AND ANY EXPRESS OR IMPLIED
- *    > WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- *    > MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- *    > EVENT SHALL Adam Presley OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- *    > INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- *    > LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- *    > PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- *    > LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- *    > OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- *    > ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013-2014 Adam Presley. All rights reserved
+// Use of this source code is governed by the MIT license
+// that can be found in the LICENSE file.
+
 define([], function() {
 	"use strict";
 
-	var $util = {
+	var FuncTools = {
 		/**
 		 * Function: each
 		 * Provides a functional-style looping function which can iterate over objects (maps)
 		 * and arrays alike. For an array the provided function is called with the current item
-		 * as the single provided argument. For an object each key is iterated over and the value
+		 * and index as the provided arguments. For an object each key is iterated over and the value
 		 * is the argument passed to the function.
 		 *
 		 * Parameters:
@@ -53,12 +22,12 @@ define([], function() {
 
 			if (items.hasOwnProperty("length")) {
 				for (i = 0; i < items.length; i++) {
-					fn(items[i]);
+					fn(items[i], i);
 				}
 			} else if (typeof items === "object") {
 				for (i in items) {
 					if (items.hasOwnProperty(i)) {
-						fn(items[i]);
+						fn(items[i], i);
 					}
 				}
 			}
@@ -85,6 +54,21 @@ define([], function() {
 		},
 
 		/**
+		 * Function: filter
+		 * Sends each item in *items* through the function *fn*. If the
+		 * function returns true the item is included in the resulting array.
+		 */
+		filter: function(items, fn) {
+			var result = [];
+
+			FuncTools.each(items, function(item) {
+				if (fn(item)) result.push(item);
+			});
+
+			return result;
+		},
+
+		/**
 		 * Function: map
 		 * Applies a function to each item in the input array or object. This function may return
 		 * the input transformed in some way, and the final result is an array of each transformed
@@ -100,7 +84,7 @@ define([], function() {
 		map: function(items, fn) {
 			var result = [];
 
-			$util.each(items, function(item) {
+			FuncTools.each(items, function(item) {
 				result.push(fn(item));
 			});
 
@@ -121,7 +105,7 @@ define([], function() {
 		 *    Object containing *key* and *value*
 		 *
 		 * Example:
-		 *    > var domItemsAndValues = RojoUtil.mapArrayToObject(
+		 *    > var domItemsAndValues = FuncTools.mapArrayToObject(
 		 *    >    ["domItem1", "domeItem2"],
 		 *    >    function(item) { return { key: item, value: document.getElementById(item).value }; }
 		 *    > );
@@ -131,42 +115,10 @@ define([], function() {
 				result = {},
 				kvp = [];
 
-			$util.each(items, function(item) {
+			FuncTools.each(items, function(item) {
 				kvp = kvpFn(item);
 				result[kvp.key] = kvp.value;
 			});
-
-			return result;
-		},
-
-		/**
-		 * Function: max
-		 * Takes a starting item, an array of items or object of keys, and a comparator function
-		 * and returns the *max* item. The comparator function takes the current
-		 * "max" item and the next item in the items array and should return the
-		 * "bigger" of the two.
-		 *
-		 * Parameters:
-		 *    startItem - Starting item for comparison
-		 *    items - Array/object of items to find the max of
-		 *    fn - Comparator function
-		 *
-		 * Returns:
-		 *    "Biggest" item in the items array
-		 */
-		max: function(startItem, items, fn) {
-			var
-				result = startItem;
-
-			if (items.hasOwnProperty("length")) {
-				$util.each(items, function(item) {
-					result = fn(result, item);
-				});
-			} else if (typeof items === "object") {
-				$util.eachKvp(items, function(item) {
-					result = fn(result, item);
-				});
-			}
 
 			return result;
 		},
@@ -185,9 +137,9 @@ define([], function() {
 		 *    An array of numbers in the sequence described by input arguments
 		 *
 		 * Example:
-		 *    > var range1 = RojoUtil.range(10); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-		 *    > var range2 = RojoUtil.range(1, 5); // [1, 2, 3, 4]
-		 *    > var range3 = RojoUtil.range(0, 10, 2); // [0, 2, 4, 6, 8]
+		 *    > var range1 = FuncTools.range(10); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+		 *    > var range2 = FuncTools.range(1, 5); // [1, 2, 3, 4]
+		 *    > var range3 = FuncTools.range(0, 10, 2); // [0, 2, 4, 6, 8]
 		 */
 		range: function() {
 			var
@@ -234,10 +186,10 @@ define([], function() {
 		reduce: function(start, items, fn) {
 			var base = start;
 
-			$util.each(items, function(item) { base = fn(base, item); });
+			FuncTools.eachKvp(items, function(item) { base = fn(base, item); });
 			return base;
 		}
 	};
 
-	return $util;
+	return FuncTools;
 });

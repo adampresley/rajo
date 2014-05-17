@@ -1,5 +1,5 @@
 /**
- * Class: rajo.singlepage
+ * Class: SinglePage
  * This class provide a simple way to build single-page, dynamic applications.
  * It is suitable for small-medium applications where you wish to load only
  * fragements of documents via URL hash fragments. This is inspired by
@@ -11,36 +11,25 @@
  * Author:
  *    Adam Presley
  *
- * Dependencies:
- *    * <rajo.pubsub>
- *    * <rajo.util>
- *    * jquery
+ * The MIT License (MIT)
+ * Copyright (c) 2014 Adam Presley
  *
- * License (BSD 2-Clause):
- *    > Copyright 2013 Adam Presley. All rights reserved.
- *    >
- *    > Redistribution and use in source and binary forms, with or without
- *    > modification, are permitted provided that the following conditions are met:
- *    >
- *    > 1. Redistributions of source code must retain the above copyright notice, this
- *    >    list of conditions and the following disclaimer.
- *    >
- *    > 2. Redistributions in binary form must reproduce the above copyright notice,
- *    >    this list of conditions and the following disclaimer in the documentation
- *    >    and/or other materials provided with the distribution.
- *    >
- *    > THIS SOFTWARE IS PROVIDED BY Adam Presley "AS IS" AND ANY EXPRESS OR IMPLIED
- *    > WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- *    > MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- *    > EVENT SHALL Adam Presley OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- *    > INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- *    > LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- *    > PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- *    > LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- *    > OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- *    > ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil) {
+define(["modules/util/PubSub", "jquery", "modules/util/FuncTools"], function(PubSub, $, FuncTools) {
 	"use strict";
 
 	return (function() {
@@ -95,7 +84,7 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 
 					split = split[1].split("&");
 
-					RajoUtil.each(split, function(item) {
+					FuncTools.each(split, function(item) {
 						var temp = item.split("=");
 						params[temp[0]] = (temp.length > 1) ? temp[1] : null;
 					});
@@ -105,7 +94,7 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 					page = split[0];
 
 					if (split.length > 1) {
-						RajoUtil.each(split, function(item) { params.push(item); });
+						FuncTools.each(split, function(item) { params.push(item); });
 					}
 				}
 
@@ -137,7 +126,7 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 
 				$el[_config.animationOut](_config.animationOutSpeed, function() {
 					$el.html(content)[_config.animationIn](_config.animationInSpeed, function() {
-						RajoPubSub.publish(_AFTER_LOAD, data);
+						PubSub.publish(_AFTER_LOAD, data);
 					});
 				});
 			},
@@ -164,7 +153,7 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 
 				/* Events */
 				beforeLoad: function(data) {
-					RajoPubSub.publish(_LOAD, data);
+					PubSub.publish(_LOAD, data);
 				},
 				load: function(data) {
 					if (_config.cacheViews && _getFullPath(data.page) in _config.views) {
@@ -261,21 +250,21 @@ define(["rajo.pubsub", "jquery", "rajo.util"], function(RajoPubSub, $, RajoUtil)
 				/*
 				 * Setup view event subscribers
 				 */
-				RajoPubSub.subscribe(this.BEFORE_LOAD, _config.beforeLoad);
-				RajoPubSub.subscribe(this.LOAD, _config.load);
-				RajoPubSub.subscribe(this.AFTER_LOAD, _config.afterLoad);
+				PubSub.subscribe(this.BEFORE_LOAD, _config.beforeLoad);
+				PubSub.subscribe(this.LOAD, _config.load);
+				PubSub.subscribe(this.AFTER_LOAD, _config.afterLoad);
 
 				/*
 				 * Listen for hash changes, then load the initial page.
 				 */
 				$(window).bind("hashchange", function() {
-					RajoPubSub.publish(iface.BEFORE_LOAD, iface.getPublishData());
+					PubSub.publish(iface.BEFORE_LOAD, iface.getPublishData());
 				});
 
 				if (window.location.hash)
-					RajoPubSub.publish(this.BEFORE_LOAD, this.getPublishData());
+					PubSub.publish(this.BEFORE_LOAD, this.getPublishData());
 				else if(_config.defaultView)
-					RajoPubSub.publish(this.BEFORE_LOAD, this.getPublishData(_config.defaultView));
+					PubSub.publish(this.BEFORE_LOAD, this.getPublishData(_config.defaultView));
 			}
 		};
 	}());
