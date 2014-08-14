@@ -84,8 +84,8 @@ define([], function() {
 		map: function(items, fn) {
 			var result = [];
 
-			FuncTools.each(items, function(item) {
-				result.push(fn(item));
+			FuncTools.each(items, function(item, key) {
+				result.push(fn(item, key));
 			});
 
 			return result;
